@@ -26,10 +26,10 @@ async function properLimiterPlugin (fastify, options) {
        * Error response generator.
        * @type {Function}
        *   @param {fastify.Request} request
-       *   @param {Object<LimiterConfig>} limiterConfig
+       *   @param {Object<RequestContext>} context
        *   @returns {Any}
        */
-      errorResponseGenerator: (request, limiterConfig) => {
+      errorResponseGenerator: (request, context) => {
         return {
           error: 'Too Many Requests',
           message: 'Rate limit exceeded for this route. Try again later.',
@@ -221,7 +221,16 @@ function properLimiterPreHandlerFactory (config, routeConfig) {
     }
 
     // Route error to the fastify error handler.
-    throw config.errorResponseGenerator(request, config);
+    throw config.errorResponseGenerator(
+      request,
+
+      {
+        max: config.max,
+        per: config.per,
+
+        ...routeConfig
+      }
+    );
   }
 }
 
