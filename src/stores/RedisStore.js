@@ -15,11 +15,9 @@ const REDIS_CMD_NAME = 'increxpr';
 class RedisStore {
   /**
    * Constructor.
-   * @param {ioredis.Client} redis
+   * @param {ioredis} redis ioredis instance
    */
   constructor (redis) {
-    super();
-
     // Define lua script for atomic increment and expire.
     if (!redis[REDIS_CMD_NAME]) {
       redis.defineCommand(
@@ -51,7 +49,7 @@ class RedisStore {
   /**
    * Increments value by key.
    * @param {String} key Key to increment
-   * @param {Integer} ttl Key time-to-live, or time window (seconds)
+   * @param {Integer} ttl Key time-to-live (seconds)
    * @returns {Integer} Current value
    */
   async increment (key, ttl) {
