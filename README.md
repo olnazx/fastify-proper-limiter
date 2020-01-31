@@ -6,6 +6,10 @@
 TODO
 ```
 
+## Example
+
+TODO
+
 ## Usage
 
 This limiter has no _global_ mode.
