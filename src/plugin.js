@@ -4,6 +4,7 @@
  * Module dependencies.
  * @private
  */
+const util = require('util');
 const fp = require('fastify-plugin');
 const RedisStore = require('./stores/RedisStore');
 const { awaitTo: to } = require('./util');
@@ -38,7 +39,7 @@ async function properLimiterPlugin (fastify, options) {
 
       /**
        * Allows to ignore rate limiting per request for the current route.
-       * @type {Function}
+       * @type {Function|AsyncFunction}
        *   @param {fastify.Request} request
        *   @param {String} storeKey
        *   @returns {Boolean}
@@ -180,11 +181,16 @@ function properLimiterPreHandlerFactory (config, routeConfig) {
     const storeKey = config.storeKeyGenerator(request, routeConfig);
 
     // Support "whitelisting".
-    if (
-      config.ignore &&
-      config.ignore(request, storeKey)
-    ) {
-      return;
+    if (config.ignore) {
+      let isWhitelisted = config.ignore(request, storeKey);
+
+      if (util.types.isPromise(isWhitelisted)) {
+        [, isWhitelisted] = await to(isWhitelisted);
+      }
+
+      if (isWhitelisted) {
+        return;
+      }
     }
 
     let [
