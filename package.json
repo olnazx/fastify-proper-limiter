@@ -4,5 +4,8 @@
   "main": "./src/plugin.js",
   "dependencies": {
     "fastify-plugin": "^1.6.0"
+  },
+  "engines": {
+    "node": ">=12.14.1"
   }
 }
