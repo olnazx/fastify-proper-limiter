@@ -12,7 +12,14 @@ const { awaitTo: to } = require('./util');
 /**
  * Plugin.
  * @param {fastify} fastify fastify instance
- * @param {Object<LimiterConfig>} options
+ * @param {Object} options
+ *   @property {Function} errorResponseGenerator
+ *   @property {Function|AsyncFunction} ignore
+ *   @property {Integer} max
+ *   @property {Integer} per
+ *   @property {Boolean} skipOnError
+ *   @property {Store} store
+ *   @property {Function} storeKeyGenerator
  * @returns {void}
  */
 async function properLimiterPlugin (fastify, options) {
@@ -26,7 +33,11 @@ async function properLimiterPlugin (fastify, options) {
        * Error response generator.
        * @type {Function}
        *   @param {fastify.Request} request
-       *   @param {Object<RequestContext>} context
+       *   @param {Object} context
+       *     @property {Integer} max
+       *     @property {Integer} per
+       *     @property {String} method
+       *     @property {String} url
        *   @returns {Any}
        */
       errorResponseGenerator: (request, context) => {
@@ -76,7 +87,9 @@ async function properLimiterPlugin (fastify, options) {
        * Store key generator.
        * @type {Function}
        *   @param {fastify.Request} request
-       *   @param {Object<RouteConfig>} routeConfig
+       *   @param {Object} routeConfig
+       *     @property {String} method
+       *     @property {String} url
        *   @returns {String}
        */
       storeKeyGenerator: (request, { method, url }) => `fastify-proper-limiter:${method}:${url}:${request.ip}`
@@ -162,9 +175,19 @@ async function properLimiterPlugin (fastify, options) {
 
 /**
  * Limiter preHandler function factory.
- * @param {Object<LimiterConfig>} config Limiter config
- * @param {Object<RouteConfig>} routeConfig
+ * @param {Object} config Limiter final config
+ *   @property {Function} errorResponseGenerator
+ *   @property {Function|AsyncFunction} ignore
+ *   @property {Integer} max
+ *   @property {Integer} per
+ *   @property {Boolean} skipOnError
+ *   @property {Store} store
+ *   @property {Function} storeKeyGenerator
+ * @param {Object} routeConfig
+ *   @property {String} method
+ *   @property {String} url
  * @returns {AsyncFunction}
+ * @private
  */
 function properLimiterPreHandlerFactory (config, routeConfig) {
   /**
