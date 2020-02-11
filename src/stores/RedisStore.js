@@ -24,13 +24,13 @@ class RedisStore {
         REDIS_CMD_NAME,
 
         {
-          numberOfKeys: 2,
+          numberOfKeys: 1,
 
           lua: `
             local current = redis.call('incr', KEYS[1])
 
             if tonumber(current) == 1 then
-              redis.call('expire', KEYS[1], KEYS[2])
+              redis.call('expire', KEYS[1], ARGV[1])
             end
 
             return current
