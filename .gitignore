@@ -1,2 +1,6 @@
+*.log
+npm-debug.log*
+.npm
+dump.rdb
 node_modules
 package-lock.json
