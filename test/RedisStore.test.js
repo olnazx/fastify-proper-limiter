@@ -6,7 +6,13 @@ const RedisStore = require('../src/stores/RedisStore');
 let redisClient;
 
 beforeEach(() => {
-  redisClient = new Redis();
+  redisClient = new Redis({ host: process.env.GITLAB_CI ? 'redis-ci': 'localhost' });
+});
+
+afterEach(async () => {
+  if (redisClient) {
+    await redisClient.disconnect();
+  } 
 });
 
 describe('Configuration', () => {
@@ -24,5 +30,32 @@ describe('Configuration', () => {
     const store = new RedisStore(redisClient);
 
     expect(redisClient[RedisStore.REDIS_CMD_NAME]).toBeDefined();
+  });
+
+  test('should increment value by key', async () => {
+    const store = new RedisStore(redisClient);
+
+    let cur;
+    cur = await store.increment('test-key', 2);
+
+    expect(cur).toEqual(1);
+
+    cur = await store.increment('test-key', 2);
+
+    expect(cur).toEqual(2);
+
+    await new Promise(resolve => setTimeout(() => resolve(), 2000));
+
+    let val = await redisClient.get('test-key');
+
+    expect(val).toBeNull();
+  });
+
+  test('should throw if redis is unavailable', async () => {
+    const store = new RedisStore(redisClient);
+
+    await redisClient.disconnect();
+
+    return expect(store.increment('test-key', 2)).rejects.toThrow();
   });
 });
