@@ -130,6 +130,8 @@ fastify.route({
 
   config: {
     limiter: {}
+    // or
+    // limiter: true
   },
 
   handler: async (request, reply) => {

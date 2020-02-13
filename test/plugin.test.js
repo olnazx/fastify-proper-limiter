@@ -43,7 +43,7 @@ describe('Configuration', () => {
     expect(preHandlerArray.length).toEqual(0);
   });
 
-  test('should throw if `config.limiter` is not an object', async () => {
+  test('should throw if `config.limiter` is not an object or a boolean', async () => {
     fastify.register(plugin);
 
     fastify.get(
@@ -51,7 +51,7 @@ describe('Configuration', () => {
 
       {
         config: {
-          limiter: 'not_an_object'
+          limiter: 'invalid_value'
         }
       },
 
@@ -65,7 +65,7 @@ describe('Configuration', () => {
     try {
       await fastify.ready();
     } catch (err) {
-      expect(err.message).toEqual('`config.limiter` should be an object.');
+      expect(err.message).toEqual('`config.limiter` should be an object or a boolean.');
     }
   });
 
@@ -670,5 +670,32 @@ describe('Runtime', () => {
     res = await fastify.inject('/test-skip');
 
     expect(res.statusCode).toEqual(200);
+  });
+
+  test('should use globally defined options when `limiter` is "true"', async () => {
+    const localTestStore = new LocalTestStore();
+
+    fastify.register(plugin, {
+      store: localTestStore,
+      storeKeyGenerator: () => 'testGlobalStaticKey'
+    });
+
+    fastify.get(
+      '/test',
+
+      {
+        config: {
+          limiter: true
+        }
+      },
+
+      (request, reply) => {
+        reply.send('hello world');
+      }
+    );
+
+    await fastify.inject('/test');
+
+    expect(localTestStore.val['testGlobalStaticKey']).toBeDefined();
   });
 });

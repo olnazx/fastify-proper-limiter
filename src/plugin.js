@@ -103,7 +103,7 @@ async function properLimiterPlugin (fastify, options) {
   fastify.addHook('onRoute', routeOptions => {
     /**
      * Per-route options for limiter.
-     * @type {Object}
+     * @type {Object|Boolean}
      */
     const limiterOptions = routeOptions.config && routeOptions.config.limiter;
 
@@ -113,8 +113,11 @@ async function properLimiterPlugin (fastify, options) {
       return;
     }
 
-    if (typeof limiterOptions !== 'object') {
-      throw new TypeError('`config.limiter` should be an object.');
+    if (
+      typeof limiterOptions !== 'object' &&
+      typeof limiterOptions !== 'boolean'
+    ) {
+      throw new TypeError('`config.limiter` should be an object or a boolean.');
     }
 
     /**
