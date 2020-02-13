@@ -18,6 +18,10 @@ class RedisStore {
    * @param {ioredis} redis ioredis instance
    */
   constructor (redis) {
+    if (!redis) {
+      throw new Error('`redis` must be an instance of "ioredis".');
+    }
+
     // Define lua script for atomic increment and expire.
     if (!redis[REDIS_CMD_NAME]) {
       redis.defineCommand(
