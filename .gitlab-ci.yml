@@ -1,6 +1,23 @@
-image: node:12
+cache:
+  key: ${CI_COMMIT_REF_SLUG}
+  paths:
+    - node_modules/
 
-unit test:
-  stage: test
+before_script:
+  - npm install
+
+.test_template: &unit_test
   script:
-    - npm run test
+    - npm test
+
+test:node_10:
+  image: node:10
+  <<: *unit_test
+
+test:node_12:
+  image: node:12
+  <<: *unit_test
+
+test:node_latest:
+  image: node:latest
+  <<: *unit_test
