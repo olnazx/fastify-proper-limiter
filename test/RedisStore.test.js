@@ -44,7 +44,7 @@ describe('Configuration', () => {
 
     expect(cur).toEqual(2);
 
-    await new Promise(resolve => setTimeout(() => resolve(), 2000));
+    await new Promise(resolve => setTimeout(() => resolve(), 3000));
 
     let val = await redisClient.get('test-key');
 
