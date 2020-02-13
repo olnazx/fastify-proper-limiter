@@ -1,6 +1,7 @@
 *.log
 npm-debug.log*
 .npm
+coverage
 dump.rdb
 node_modules
 package-lock.json
