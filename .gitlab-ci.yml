@@ -1,0 +1,6 @@
+image: node:12
+
+unit test:
+  stage: test
+  script:
+    - npm run test
