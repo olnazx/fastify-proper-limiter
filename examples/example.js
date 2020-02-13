@@ -5,17 +5,16 @@
  * @private
  */
 const Redis = require('ioredis');
-const fastify = require('fastify');
-const fastifyProperLimiter = require('../src/plugin');
+const fastify = require('fastify')();
+const limiter = require('../src/plugin');
 
-const server = fastify();
 const redisClient = new Redis();
 
-// RedisStore for the limiter.
-const redisStore = new fastifyProperLimiter.RedisStore(redisClient);
+// Redis Store for the limiter.
+const redisStore = new limiter.RedisStore(redisClient);
 
-server.register(
-  fastifyProperLimiter,
+fastify.register(
+  limiter,
 
   {
     // Ignore limiter if user is an admin (pseudo example).
@@ -38,15 +37,18 @@ server.register(
   }
 );
 
-server.get(
+fastify.get(
   '/not-limited',
 
-  (request, reply) => {
-    reply.send({ hello: 'world', requests_to_this_route: 'are not limited' });
+  async (request, reply) => {
+    return {
+      hello: 'world',
+      requests_to_this_route: 'are not limited'
+    }
   }
 );
 
-server.get(
+fastify.get(
   '/limited-default',
 
   {
@@ -55,12 +57,15 @@ server.get(
     }
   },
 
-  (request, reply) => {
-    reply.send({ hello: 'world', default_limiter_settings: 'are used' });
+  async (request, reply) => {
+    return {
+      hello: 'world',
+      default_limiter_settings: 'are used'
+    }
   }
 );
 
-server.get(
+fastify.get(
   '/basic',
 
   {
@@ -72,12 +77,15 @@ server.get(
     }
   },
 
-  (request, reply) => {
-    reply.send({ hello: 'world', limit: '3 req/minute' });
+  async (request, reply) => {
+    return {
+      hello: 'world',
+      limit: '3 requests / 1 minute'
+    }
   }
 );
 
-server.get(
+fastify.get(
   '/local-ignore',
 
   {
@@ -98,12 +106,15 @@ server.get(
     }
   },
 
-  (request, reply) => {
-    reply.send({ hello: 'world', limit: '10 req/minute' });
+  async (request, reply) => {
+    return {
+      hello: 'world',
+      limit: '10 req/minute'
+    }
   }
 );
 
-server.get(
+fastify.get(
   '/custom-error',
 
   {
@@ -123,15 +134,18 @@ server.get(
     }
   },
 
-  (request, reply) => {
-    reply.send({ hello: 'world', custom_error: true });
+  async (request, reply) => {
+    return {
+      hello: 'world',
+      custom_error: true
+    }
   }
 );
 
-server.listen(3000, error => {
+fastify.listen(3000, error => {
   if (error) {
     throw error;
   }
 
-  console.log('Server is listening at http://localhost:3000');
+  console.log('Server is listening at http://localhost:3000/');
 });
