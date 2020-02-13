@@ -1,6 +1,21 @@
-> Enhanced version of [fastify-rate-limit](https://github.com/fastify/fastify-rate-limit).
+> Alternative version of [fastify-rate-limit](https://github.com/fastify/fastify-rate-limit).
 
 Rate limiter for Fastify `2.x`.
+
+#### Table of Contents
+
+1. [Installation](#installation)
+2. [Example](#example)
+3. [Usage](#usage)
+4. [Plugin Options](#plugin-options)
+    1. [`store`](#store-required)
+    2. [`errorResponseGenerator`](#errorresponsegenerator)
+    3. [`ignore`](#ignore)
+    4. [`max`](#max)
+    5. [`per`](#per)
+    6. [`skipOnError`](#skiponerror)
+    7. [`storeKeyGenerator`](#storekeygenerator)
+    8. [Custom Store](#custom-store)
 
 ## Installation
 
