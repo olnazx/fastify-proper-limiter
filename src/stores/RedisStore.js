@@ -68,3 +68,4 @@ class RedisStore {
 }
 
 module.exports = RedisStore;
+module.exports.REDIS_CMD_NAME = REDIS_CMD_NAME;
