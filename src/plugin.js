@@ -41,11 +41,12 @@ async function properLimiterPlugin (fastify, options) {
        *   @returns {Any}
        */
       errorResponseGenerator: (request, context) => {
-        return {
-          error: 'Too Many Requests',
-          message: 'Rate limit exceeded for this route. Try again later.',
-          statusCode: 403
-        }
+        let error = new Error('Rate limit exceeded for this route. Try again later.');
+
+        error.error = 'Too Many Requests';
+        error.statusCode = 403;
+
+        return error;
       },
 
       /**
@@ -122,7 +123,11 @@ async function properLimiterPlugin (fastify, options) {
      */
     const config = Object.assign({ ...globalOptions }, limiterOptions);
 
-    if (typeof errorResponseGenerator !== 'function') {
+    if (!config.store) {
+      throw new Error('`limiter.store` is required.');
+    }
+
+    if (typeof config.errorResponseGenerator !== 'function') {
       throw new TypeError('`limiter.errorResponseGenerator` should be a function.');
     }
 
@@ -130,7 +135,7 @@ async function properLimiterPlugin (fastify, options) {
       config.ignore &&
       typeof config.ignore !== 'function'
     ) {
-      throw new TyprError('`limiter.ignore` should be a function.');
+      throw new TypeError('`limiter.ignore` should be a function.');
     }
 
     if (typeof config.max !== 'number') {
@@ -139,10 +144,6 @@ async function properLimiterPlugin (fastify, options) {
 
     if (typeof config.per !== 'number') {
       throw new TypeError('`limiter.per` should be a number.');
-    }
-
-    if (!config.store) {
-      throw new Error('`limiter.store` is required.');
     }
 
     if (typeof config.storeKeyGenerator !== 'function') {
