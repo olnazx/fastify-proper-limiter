@@ -1,7 +1,9 @@
-*.log
-npm-debug.log*
-.npm
+.cache
+.DS_Store
 coverage
-dump.rdb
+dist
+logs
 node_modules
+*.log
+dump.rdb
 package-lock.json
