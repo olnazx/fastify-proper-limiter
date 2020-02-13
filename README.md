@@ -25,7 +25,7 @@ fastify.register(limiter, {
   store: new limiter.RedisStore(redisClient)
 });
 
-fasitfy.route({
+fastify.route({
   url: '/',
 
   // Limiting should be configured for each route individually.
@@ -55,7 +55,7 @@ fastify.listen(3000, error => {
 });
 ```
 
-If a client reaches the maximum number of allowed requests, the `403 Forbidden` error will be thrown. This behaviour can be customized.
+If a client reaches the maximum number of allowed requests, the `403 Forbidden` error will be thrown. This behaviour [can be customized](#errorresponsegenerator).
 
 ## Usage
 
@@ -147,7 +147,7 @@ Globally defined options will be overrided with the local ones (`config.limiter`
 
 #### `errorResponseGenerator`
 
-* Default: `Function` [[Source Code ↗]](src/plugin.js#L43)
+* Default: `Function` [[Source Code]](src/plugin.js#L43)
 * `Function`: Custom function that takes two arguments (`request` and `context`) and should return an instance of Error.
 
   ```js
@@ -210,7 +210,7 @@ Globally defined options will be overrided with the local ones (`config.limiter`
 
 #### `storeKeyGenerator`
 
-* Default: `Function` [[Source Code ↗]](src/plugin.js#L96)
+* Default: `Function` [[Source Code]](src/plugin.js#L96)
 * `Function`: Custom function that takes two arguments (`request` and `routeConfig`) and should return a String.
 
   ```js
@@ -229,9 +229,9 @@ Globally defined options will be overrided with the local ones (`config.limiter`
 
 ### Custom Store
 
-You can use built-in Redis Store as shown in the exmaple above or use your own implementation.
+You can use [built-in Redis Store](src/stores/RedisStore.js) as shown in the exmaple above or use your own implementation.
 
-Store Class should implement only one method: `increment`. This function takes two arguments (`key` and `ttl`) and should return a Promise that resolves to a current request number in a time frame (ttl). For example:
+Store Class should implement only one method: `increment`. This function takes two arguments (`key` and `ttl`) and should return a Promise that resolves to a current request number in a time frame. For example:
 
 ```js
 class CustomStore {
