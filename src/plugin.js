@@ -83,7 +83,7 @@ async function properLimiterPlugin (fastify, options) {
        * Store.
        * @type {Store}
        */
-      store: new LocalStore(),
+      store: null,
 
       /**
        * Store key generator.
@@ -99,6 +99,10 @@ async function properLimiterPlugin (fastify, options) {
 
     options
   );
+
+  if (!globalOptions.store) {
+    globalOptions.store = new LocalStore();
+  }
 
   // Use 'onRoute' hook to inject 'preHandler' for rate limiting.
   fastify.addHook('onRoute', routeOptions => {
