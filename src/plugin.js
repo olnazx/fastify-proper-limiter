@@ -6,6 +6,7 @@
  */
 const util = require('util');
 const fp = require('fastify-plugin');
+const LocalStore = require('./stores/LocalStore');
 const RedisStore = require('./stores/RedisStore');
 const { awaitTo: to } = require('./util');
 
@@ -268,4 +269,5 @@ module.exports = fp(properLimiterPlugin, {
 });
 
 // Stores.
+module.exports.LocalStore = LocalStore;
 module.exports.RedisStore = RedisStore;
