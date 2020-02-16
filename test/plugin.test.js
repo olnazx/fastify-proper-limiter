@@ -78,7 +78,7 @@ describe('Configuration', () => {
       {
         config: {
           limiter: {
-            // `store` is missing
+            store: null
           }
         }
       },
@@ -329,6 +329,40 @@ describe('Runtime', () => {
       return this.val[key];
     }
   }
+
+  test('should work with default LocalStore', async () => {
+    fastify.register(plugin);
+
+    fastify.get(
+      '/test',
+
+      {
+        config: {
+          limiter: {
+            max: 2,
+            per: 10
+          }
+        }
+      },
+
+      (request, reply) => {
+        reply.send('hello world');
+      }
+    );
+
+    let res;
+    res = await fastify.inject('/test');
+
+    expect(res.statusCode).toEqual(200);
+
+    res = await fastify.inject('/test');
+
+    expect(res.statusCode).toEqual(200);
+
+    res = await fastify.inject('/test');
+
+    expect(res.statusCode).toEqual(403);
+  });
 
   test('should work with Custom Store', async () => {
     expect.assertions(8);
