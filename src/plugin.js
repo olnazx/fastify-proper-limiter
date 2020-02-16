@@ -83,7 +83,7 @@ async function properLimiterPlugin (fastify, options) {
        * Store.
        * @type {Store}
        */
-      store: null,
+      store: new LocalStore(),
 
       /**
        * Store key generator.
