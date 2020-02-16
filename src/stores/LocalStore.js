@@ -73,6 +73,7 @@ class LocalStore {
    */
   async increment (key, ttl) {
     let counter = this._get(key);
+    let now = Date.now();
 
     if (
       !counter ||
@@ -80,7 +81,7 @@ class LocalStore {
     ) {
       counter = {
         value: 1,
-        createdAt: Date.now()
+        createdAt: now
       }
 
       this._set(key, counter);
