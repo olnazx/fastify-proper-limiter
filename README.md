@@ -1,6 +1,6 @@
 > Alternative version of [fastify-rate-limit](https://github.com/fastify/fastify-rate-limit).
 
-Rate limiter for Fastify `2.x`.
+A rate limiter for Fastify `>=2.x`.
 
 #### Table of Contents
 
@@ -35,8 +35,8 @@ const Redis = require('ioredis');
 const redisClient = new Redis();
 
 fastify.register(limiter, {
-  // Limiter does not provide a default Store.
-  // You should explicitly set it.
+  // Although limiter provides a default Local Store,
+  // we will use Redis for this example.
   store: new limiter.RedisStore(redisClient)
 });
 
@@ -79,15 +79,11 @@ If a client reaches the maximum number of allowed requests, the `403 Forbidden` 
 ```js
 const fastify = require('fastify')();
 const limiter = require('fastify-proper-limiter');
-const Redis = require('ioredis');
-
-const redisClient = new Redis();
 
 fastify.register(limiter, {
   max: 1,
   per: 1,
-  skipOnError: true,
-  store: new limiter.RedisStore(redisClient)
+  skipOnError: true
 });
 
 // Rate limiting won't happen because limiter config is missing
@@ -157,9 +153,9 @@ Plugin uses Fastify's `onRoute` hook to inject `preHandler` function where rate 
 
 Globally defined options will be overrided with the local ones (`config.limiter`).
 
-#### `store` (required)
+#### `store`
 
-* Default: `null`
+* Default: [Local Store](src/stores/LocalStore.js)
 * `Store`: [Custom Store](#custom-store)
 
 #### `errorResponseGenerator`
@@ -246,7 +242,7 @@ Globally defined options will be overrided with the local ones (`config.limiter`
 
 ### Custom Store
 
-You can use [built-in Redis Store](src/stores/RedisStore.js) as shown in the exmaple above or use your own implementation.
+You can use built-in [Redis](src/stores/RedisStore.js) or [Local](src/stores/LocalStore.js) Store as shown in the exmaples above or use your own implementation.
 
 Store Class should implement only one method: `increment`. This function takes two arguments (`key` and `ttl`) and should return a Promise that resolves to a current request number in a time frame. For example:
 
