@@ -47,7 +47,7 @@ class RedisStore {
      * Redis Client (ioredis).
      * @type {ioredis.Client}
      */
-    this.redis = redis;
+    this._redis = redis;
   }
 
   /**
@@ -57,7 +57,7 @@ class RedisStore {
    * @returns {Integer} Current value
    */
   async increment (key, ttl) {
-    let [err, current] = await to(this.redis[REDIS_CMD_NAME](key, ttl));
+    let [err, current] = await to(this._redis[REDIS_CMD_NAME](key, ttl));
 
     if (err) {
       throw err;
