@@ -258,7 +258,7 @@ Globally defined options will be overrided with the local ones (`config.limiter`
 
 ### Custom Store
 
-You can use built-in [Redis](src/stores/RedisStore.js) or [Local](src/stores/LocalStore.js) Store as shown in the exmaples above or use your own implementation.
+You can use built-in [Redis](src/stores/RedisStore.js) or [Local](src/stores/LocalStore.js) Store as shown in the examples above or use your own implementation.
 
 Store Class should implement only one method: `increment`. This function takes two arguments (`key` and `ttl`) and should return a Promise that resolves to a current request number in a time frame. For example:
 
