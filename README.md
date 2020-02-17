@@ -8,7 +8,7 @@ A rate limiter for Fastify `>=2.x`.
 2. [Example](#example)
 3. [Usage](#usage)
 4. [Plugin Options](#plugin-options)
-    1. [`store`](#store-required)
+    1. [`store`](#store)
     2. [`errorResponseGenerator`](#errorresponsegenerator)
     3. [`ignore`](#ignore)
     4. [`max`](#max)
