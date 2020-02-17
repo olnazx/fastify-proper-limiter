@@ -153,7 +153,7 @@ describe('Configuration', () => {
     }
   });
 
-  test('should throw if `limiter.max` is not a number', async () => {
+  test('should throw if `limiter.max` is neither a number nor a function', async () => {
     fastify.register(plugin, { store: noopTestStore });
 
     fastify.get(
@@ -177,7 +177,7 @@ describe('Configuration', () => {
     try {
       await fastify.ready();
     } catch (err) {
-      expect(err.message).toEqual('`limiter.max` should be a number.');
+      expect(err.message).toEqual('`limiter.max` should be a number or a function.');
     }
   });
 
@@ -610,6 +610,105 @@ describe('Runtime', () => {
     res = await fastify.inject('/test');
 
     expect(res.statusCode).toEqual(403);
+  });
+
+  test('should support dynamic "max" (sync function)', async () => {
+    fastify.register(plugin, { store: new LocalTestStore() });
+
+    fastify.get(
+      '/test',
+
+      {
+        config: {
+          limiter: {
+            max: () => 1,
+            per: 10
+          }
+        }
+      },
+
+      (request, reply) => {
+        reply.send('hello world');
+      }
+    );
+
+    let res;
+    res = await fastify.inject('/test');
+
+    expect(res.statusCode).toEqual(200);
+
+    res = await fastify.inject('/test');
+
+    expect(res.statusCode).toEqual(403);
+  });
+
+  test('should support dynamic "max" (async function)', async () => {
+    fastify.register(plugin, { store: new LocalTestStore() });
+
+    fastify.get(
+      '/test',
+
+      {
+        config: {
+          limiter: {
+            max: async () => 1,
+            per: 10
+          }
+        }
+      },
+
+      (request, reply) => {
+        reply.send('hello world');
+      }
+    );
+
+    let res;
+    res = await fastify.inject('/test');
+
+    expect(res.statusCode).toEqual(200);
+
+    res = await fastify.inject('/test');
+
+    expect(res.statusCode).toEqual(403);
+  });
+
+  test('should support dynamic "max" (basic)', async () => {
+    fastify.register(plugin, { store: new LocalTestStore() });
+
+    fastify.get(
+      '/test',
+
+      {
+        config: {
+          limiter: {
+            storeKeyGenerator: request => request.headers['api-key'],
+            max: (request, key) => key === 'pro' ? 2 : 1,
+            per: 10
+          }
+        }
+      },
+
+      (request, reply) => {
+        reply.send('hello world');
+      }
+    );
+
+    const requests = [
+      { headers: { 'api-key': 'pro' }, status: 200 },
+      { headers: { 'api-key': 'pro' }, status: 200 },
+      { headers: { 'api-key': 'pro' }, status: 403 },
+      { headers: { 'api-key': 'non-pro' }, status: 200 },
+      { headers: { 'api-key': 'non-pro' }, status: 403 }
+    ];
+
+    for (const request of requests) {
+      let res = await fastify.inject({
+        url: '/test',
+        headers: request.headers
+      });
+
+      expect(res.statusCode).toEqual(request.status);
+    }
   });
 
   test('should override default "storeKeyGenerator"', async () => {

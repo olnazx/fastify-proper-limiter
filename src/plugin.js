@@ -16,7 +16,7 @@ const { awaitTo: to } = require('./util');
  * @param {Object} options
  *   @property {Function} errorResponseGenerator
  *   @property {Function|AsyncFunction} ignore
- *   @property {Integer} max
+ *   @property {Integer|Function|AsyncFunction} max
  *   @property {Integer} per
  *   @property {Boolean} skipOnError
  *   @property {Store} store
@@ -63,7 +63,10 @@ async function properLimiterPlugin (fastify, options) {
 
       /**
        * Maximum number of requests allowed.
-       * @type {Integer}
+       * @type {Integer|Function|AsyncFunction}
+       *   @param {fastify.Request} request
+       *   @param {String} storeKey
+       *   @returns {Integer}
        */
       max: 300,
 
@@ -146,8 +149,11 @@ async function properLimiterPlugin (fastify, options) {
       throw new TypeError('`limiter.ignore` should be a function.');
     }
 
-    if (typeof config.max !== 'number') {
-      throw new TypeError('`limiter.max` should be a number.');
+    if (
+      typeof config.max !== 'number' &&
+      typeof config.max !== 'function'
+    ) {
+      throw new TypeError('`limiter.max` should be a number or a function.');
     }
 
     if (typeof config.per !== 'number') {
@@ -187,7 +193,7 @@ async function properLimiterPlugin (fastify, options) {
  * @param {Object} config Limiter final config
  *   @property {Function} errorResponseGenerator
  *   @property {Function|AsyncFunction} ignore
- *   @property {Integer} max
+ *   @property {Integer|Function|AsyncFunction} max
  *   @property {Integer} per
  *   @property {Boolean} skipOnError
  *   @property {Store} store
@@ -247,8 +253,24 @@ function properLimiterPreHandlerFactory (config, routeConfig) {
       throw err;
     }
 
+    /**
+     * Max number of allowed requests.
+     * @type {Integer}
+     */
+    let max;
+
+    if (typeof config.max === 'number') {
+      max = config.max;
+    } else {
+      max = config.max(request, storeKey);
+
+      if (util.types.isPromise(max)) {
+        [, max] = await to(max);
+      }
+    }
+
     // Limit is not reached yet.
-    if (current <= config.max) {
+    if (current <= max) {
       return;
     }
 
@@ -257,7 +279,7 @@ function properLimiterPreHandlerFactory (config, routeConfig) {
       request,
 
       {
-        max: config.max,
+        max,
         per: config.per,
 
         ...routeConfig

@@ -210,6 +210,22 @@ Globally defined options will be overrided with the local ones (`config.limiter`
 
 * Default: `300`
 * `Number`: Maximum number of allowed requests per time frame.
+* `Function`: Custom function (can be also an async function) that takes two arguments (`request` and `storeKey`) and should return a Number.
+
+  ```js
+  /**
+   * @param {Fastify.Request} request
+   * @param {String} storeKey
+   * @returns {Integer}
+   */
+  function max (request, storeKey) {
+    if (request.headers['x-premium-user'] !== undefined) {
+      return 100;
+    }
+
+    return 10;
+  }
+  ```
 
 #### `per`
 
