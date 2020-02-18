@@ -19,7 +19,7 @@ A rate limiter for Fastify `>=2.x`.
 
 ## Installation
 
-```
+```sh
 npm i gitlab:olnazx/fastify-proper-limiter
 ```
 
