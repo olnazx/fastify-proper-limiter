@@ -2,6 +2,9 @@
   "name": "fastify-proper-limiter",
   "version": "1.0.0",
   "main": "./src/plugin.js",
+  "files": [
+    "/src"  
+  ],
   "dependencies": {
     "fastify-plugin": "^1.6.0"
   },
