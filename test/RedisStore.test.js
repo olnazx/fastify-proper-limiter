@@ -12,7 +12,7 @@ beforeEach(() => {
 afterEach(async () => {
   if (redisClient) {
     await redisClient.disconnect();
-  } 
+  }
 });
 
 test('should throw if `redis` is not provided', () => {
