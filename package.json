@@ -1,10 +1,13 @@
 {
   "name": "fastify-proper-limiter",
   "version": "1.0.1",
+  "description": "A rate limiter for fastify.",
   "main": "./src/plugin.js",
   "files": [
-    "/src"  
+    "/src"
   ],
+  "repository": "gitlab:olnazx/fastify-proper-limiter",
+  "license": "Zlib",
   "dependencies": {
     "fastify-plugin": "^1.6.0"
   },
@@ -17,6 +20,6 @@
     "jest": "^25.1.0"
   },
   "scripts": {
-    "test": "jest"
+    "test": "jest --env=node"
   }
 }
