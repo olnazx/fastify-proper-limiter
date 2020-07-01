@@ -290,7 +290,7 @@ function properLimiterPreHandlerFactory (config, routeConfig) {
 
 // Plugin.
 module.exports = fp(properLimiterPlugin, {
-  fastify: '>=2.12.x',
+  fastify: '>=3',
   name: 'fastify-proper-limiter'
 });
 
