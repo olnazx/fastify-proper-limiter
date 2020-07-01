@@ -9,15 +9,15 @@
   "repository": "gitlab:olnazx/fastify-proper-limiter",
   "license": "Zlib",
   "dependencies": {
-    "fastify-plugin": "^1.6.0"
+    "fastify-plugin": "^1.6.1"
   },
   "engines": {
     "node": ">=10"
   },
   "devDependencies": {
-    "fastify": "^2.12.0",
-    "ioredis": "^4.14.1",
-    "jest": "^25.1.0"
+    "fastify": "^3.0.0-rc.5",
+    "ioredis": "^4.17.3",
+    "jest": "^26.1.0"
   },
   "scripts": {
     "test": "jest --env=node"
