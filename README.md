@@ -1,6 +1,6 @@
 > Alternative version of [fastify-rate-limit](https://github.com/fastify/fastify-rate-limit).
 
-A rate limiter for Fastify `>=2.x`.
+A rate limiter for Fastify `>=3.x`.
 
 #### Table of Contents
 
