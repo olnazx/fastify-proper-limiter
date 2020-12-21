@@ -14,13 +14,10 @@ jobs:
         node-version: [10.x, 12.x, 14.x]
 
     services:
-      redis-ci:
+      redis:
         image: redis
-        options: >-
-          --health-cmd "redis-cli ping"
-          --health-interval 10s
-          --health-timeout 5s
-          --health-retries 5
+        ports:
+          - 6379:6379
 
     steps:
       - uses: actions/checkout@v2
