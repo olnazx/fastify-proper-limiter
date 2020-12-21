@@ -20,7 +20,7 @@ A rate limiter for Fastify `>=3.x`.
 ## Installation
 
 ```sh
-npm i gitlab:olnazx/fastify-proper-limiter
+npm i @olnazx/fastify-proper-limiter@github:olnazx/fastify-proper-limiter
 ```
 
 ## Example
@@ -29,7 +29,7 @@ Minimal example of rate limiting requests using Redis as a storage of temporary 
 
 ```js
 const fastify = require('fastify')();
-const limiter = require('fastify-proper-limiter');
+const limiter = require('@olnazx/fastify-proper-limiter');
 const Redis = require('ioredis');
 
 const redisClient = new Redis();
@@ -78,7 +78,7 @@ If a client reaches the maximum number of allowed requests, the `403 Forbidden` 
 
 ```js
 const fastify = require('fastify')();
-const limiter = require('fastify-proper-limiter');
+const limiter = require('@olnazx/fastify-proper-limiter');
 
 fastify.register(limiter, {
   max: 1,

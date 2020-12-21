@@ -6,7 +6,7 @@ const RedisStore = require('../src/stores/RedisStore');
 let redisClient;
 
 beforeEach(() => {
-  redisClient = new Redis({ host: process.env.GITLAB_CI ? 'redis-ci': 'localhost' });
+  redisClient = new Redis({ host: process.env.CI ? 'redis-ci': 'localhost' });
 });
 
 afterEach(async () => {

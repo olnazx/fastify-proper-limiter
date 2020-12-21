@@ -6,7 +6,7 @@
   "files": [
     "/src"
   ],
-  "repository": "gitlab:olnazx/fastify-proper-limiter",
+  "repository": "github:olnazx/fastify-proper-limiter",
   "license": "Zlib",
   "dependencies": {
     "fastify-plugin": "^1.6.1"
